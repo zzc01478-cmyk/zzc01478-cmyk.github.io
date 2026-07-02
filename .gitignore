@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.env.*
+*.key
+*.pem
+node_modules/
+dist/
+build/
+个人网站重构结构化方案.md
+**/design/*.md
+assets/case-ai-workflow.jpg
+assets/case-content-commerce.jpg
+assets/case-private-tools-ops.jpg
+assets/materials/archive-desk-base.png
+assets/personal-system-map.png

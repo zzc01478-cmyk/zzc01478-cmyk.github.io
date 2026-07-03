@@ -13,3 +13,14 @@ assets/case-content-commerce.jpg
 assets/case-private-tools-ops.jpg
 assets/materials/archive-desk-base.png
 assets/personal-system-map.png
+
+# Local-only mirrors of protected tool pages for localhost preview.
+/cpa/
+/image-playground/
+/monitor/
+/proxy/
+/tools/image/
+/tools/monitor/
+/tools/proxy/
+/tools/sim/
+/tools/ecommerce-video-breakdown/

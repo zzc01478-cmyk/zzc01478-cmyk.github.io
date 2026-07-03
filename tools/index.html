@@ -60,6 +60,14 @@
       <div class="wrap"><span>工具箱</span><a href="/">返回个人网站</a></div>
     </footer>
   </div>
+  <script>
+    if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+      document.querySelectorAll('a[href^="https://chenzhihong.online/"]').forEach((link) => {
+        const target = new URL(link.href);
+        link.href = target.pathname + target.search + target.hash;
+      });
+    }
+  </script>
   <script src="/assets/site-motion.js?v=20260703-v2" defer></script>
 </body>
 </html>

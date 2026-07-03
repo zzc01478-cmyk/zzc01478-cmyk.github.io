@@ -978,9 +978,7 @@ main,
   line-height: var(--leading-body);
 }
 
-.toolbox-component,
-.tool-group,
-.toolbox-boundary {
+.toolbox-component {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -994,16 +992,14 @@ main,
   padding: var(--space-7);
 }
 
-.toolbox-copy,
-.toolbox-boundary {
+.toolbox-copy {
   padding: var(--space-6);
   background: var(--bg);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-md);
 }
 
-.toolbox-copy h3,
-.toolbox-boundary h2 {
+.toolbox-copy h3 {
   margin: var(--space-3) 0 0;
   color: var(--fg);
   font: 500 var(--text-xl) / var(--leading-tight) var(--font-display);
@@ -1051,8 +1047,7 @@ main,
 
 .toolbox-main-link span,
 .toolbox-status-list span,
-.tool-card span,
-.tool-group-head span {
+.tool-card span {
   color: var(--meta);
   font: 500 var(--text-sm) / 1 var(--font-display);
   letter-spacing: var(--tracking-label);
@@ -1136,48 +1131,16 @@ main,
   font: 500 var(--text-xl) / var(--leading-tight) var(--font-display);
 }
 
-.tool-card p {
-  margin: var(--space-3) 0 0;
-  color: var(--muted);
-  line-height: var(--leading-dense);
+.tools-hero {
+  padding-bottom: var(--space-8);
 }
 
-.tool-card.is-existing span {
-  color: var(--accent);
+.tools-hero h1 {
+  max-width: 12ch;
 }
 
-.tools-hero .hero-grid {
-  align-items: stretch;
-}
-
-.toolbox-boundary {
-  align-self: stretch;
-  display: grid;
-  align-content: center;
-}
-
-.tool-group {
-  padding: var(--space-7);
-}
-
-.tool-group + .tool-group {
-  margin-top: var(--space-5);
-}
-
-.tool-group-head {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-5);
-  align-items: end;
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid var(--border-soft);
-  margin-bottom: var(--space-5);
-}
-
-.tool-group-head p {
-  max-width: 56ch;
-  margin: 0;
-  color: var(--muted);
+.tools-list-section {
+  padding-top: var(--space-8);
 }
 
 .case-card {
@@ -1640,16 +1603,8 @@ main,
   }
 
   .toolbox-component,
-  .tool-group,
-  .toolbox-copy,
-  .toolbox-boundary {
+  .toolbox-copy {
     padding: var(--space-5);
-  }
-
-  .tool-group-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: var(--space-2);
   }
 
   .actions .btn,

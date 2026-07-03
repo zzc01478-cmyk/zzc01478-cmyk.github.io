@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="description" content="抽纸盒受保护工具箱：集中整理画图、CPA、监控、代理、SIM 保号和短视频拆解入口，保持服务器原有认证边界。">
+  <title>工具箱 | 抽纸盒</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/site-system.css?v=20260703-tools-entry">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到内容</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="抽纸盒首页"><strong>抽纸盒</strong><span>受保护工具箱</span></a>
+        <nav class="nav-links" aria-label="工具导航">
+          <a href="/">首页</a>
+          <a href="/works/">作品</a>
+          <a href="/methods/">方法</a>
+          <a href="/tools/" aria-current="page">工具箱</a>
+          <a href="/about/">关于</a>
+          <a href="/resume/">简历</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero tools-hero">
+        <div class="wrap hero-grid">
+          <div data-reveal>
+            <p class="section-num">私有工具</p>
+            <h1>工具入口不改变认证边界。</h1>
+            <p class="lead">这里只把入口收清楚。所有链接继续进入 coco 服务器现有受保护路径，由服务器登录或工具自身登录接管。</p>
+            <div class="actions" aria-label="工具箱行动">
+              <a class="btn primary" href="#tool-cards">查看入口</a>
+              <a class="btn" href="/#toolbox">回到首页组件</a>
+            </div>
+          </div>
+          <aside class="toolbox-boundary" data-reveal aria-label="工具箱边界">
+            <p class="mini-label">边界规则</p>
+            <h2>只放入口，不放密钥、接口、完整后台数据。</h2>
+            <ul class="dash-list">
+              <li>画图工具、CPA 管理页和 SIM 看板保留原有前端。</li>
+              <li>监控、代理、短视频拆解继续指向线上受保护路径。</li>
+              <li>此页受 `/tools/` 的 Basic Auth 保护，不改 Nginx 认证配置。</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="tool-cards">
+        <div class="wide-wrap">
+          <div class="section-head" data-reveal>
+            <p class="section-num">入口清单</p>
+            <h2 class="section-title">保留已有前端，只统一入口。</h2>
+            <p class="lead">卡片只负责导航和边界说明，避免误以为公开首页已经绕过登录或替换了原工具。</p>
+          </div>
+          <div class="tool-group" data-reveal>
+            <div class="tool-group-head">
+              <span>已有前端，不改样式</span>
+              <p>这些页面已经有自己的界面、跳转或业务逻辑，总入口只提供路径。</p>
+            </div>
+            <div class="toolbox-mini-grid" aria-label="已有前端工具">
+              <a class="tool-card is-existing" href="https://chenzhihong.online/tools/image/"><span>已有前端</span><strong>画图工具</strong><p>图片生成与素材处理入口，继续跳到现有图像工具。</p></a>
+              <a class="tool-card is-existing" href="https://chenzhihong.online/cpa/"><span>已有前端</span><strong>CPA 管理面板</strong><p>独立 CPA 管理中心，保持原应用和认证方式。</p></a>
+              <a class="tool-card is-existing" href="https://chenzhihong.online/tools/cpa/"><span>跳转入口</span><strong>CPA 工具入口</strong><p>保留服务器现有跳转，不重写管理中心。</p></a>
+              <a class="tool-card is-existing" href="https://chenzhihong.online/tools/sim/"><span>已有看板</span><strong>SIM 保号</strong><p>号码保号与状态查看入口，保留只读和人工确认边界。</p></a>
+            </div>
+          </div>
+
+          <div class="tool-group" data-reveal>
+            <div class="tool-group-head">
+              <span>受保护线上入口</span>
+              <p>这些入口继续由线上服务承接，总入口不复制 token、不代理接口、不替换业务页面。</p>
+            </div>
+            <div class="toolbox-mini-grid" aria-label="受保护线上工具">
+              <a class="tool-card" href="https://chenzhihong.online/tools/monitor/"><span>受保护</span><strong>服务器监控</strong><p>查看服务状态、认证边界和排查顺序。</p></a>
+              <a class="tool-card" href="https://chenzhihong.online/tools/proxy/"><span>受保护</span><strong>代理面板</strong><p>代理订阅、规则出口和刷新动作入口。</p></a>
+              <a class="tool-card" href="https://chenzhihong.online/tools/ecommerce-video-breakdown/"><span>受保护</span><strong>短视频拆解</strong><p>电商短视频拆解与素材复盘工具入口。</p></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap contact-panel" data-reveal>
+          <div>
+            <h2>上线时只覆盖总入口。</h2>
+            <p>部署只更新首页、样式和这个 `/tools/index.html`。各工具子目录继续保留服务器上的原文件。</p>
+          </div>
+          <a class="btn primary" href="/">返回首页</a>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap"><span>工具箱不含生产密钥。</span><a href="/">返回个人网站</a></div>
+    </footer>
+  </div>
+  <script src="/assets/site-motion.js?v=20260703-v2" defer></script>
+</body>
+</html>

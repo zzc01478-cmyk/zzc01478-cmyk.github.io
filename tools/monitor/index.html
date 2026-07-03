@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>服务器监控 | 抽纸盒工具箱</title>
+  <link rel="stylesheet" href="/assets/site-system.css">
+  <style>
+    .ops-page .site-header .wrap{min-height:64px}.ops-main{padding:36px 0 72px}.ops-hero{display:grid;gap:var(--space-5);margin-bottom:var(--space-5)}.ops-title-row{display:flex;justify-content:space-between;gap:var(--space-5);align-items:end}.ops-title-row h1{max-width:none;margin:0;font:500 clamp(32px,4vw,46px)/var(--leading-tight) var(--font-display);letter-spacing:0}.ops-title-row p{max-width:58ch;margin:var(--space-2) 0 0;color:var(--muted);font-size:var(--text-md);line-height:var(--leading-body)}.ops-badges,.ops-tabs,.ops-actions{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}.ops-actions{justify-content:flex-end}.ops-page .btn{white-space:nowrap}.ops-badge,.status-badge{min-height:28px;display:inline-flex;align-items:center;padding:0 var(--space-3);border:1px solid var(--border-soft);border-radius:var(--radius-sm);background:var(--surface);color:var(--fg-2);font:500 var(--text-sm)/1 var(--font-display);letter-spacing:var(--tracking-label);white-space:nowrap}.ops-badge.is-primary,.status-badge.is-primary{border-color:var(--tag-bg-strong);background:var(--tag-bg-faint);color:var(--accent)}.status-badge.is-ok{color:var(--success);background:var(--surface)}.status-badge.is-warn{color:var(--warn);background:var(--tag-bg-soft)}.status-badge.is-muted{color:var(--meta);background:var(--bg)}.auth-note{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-4);align-items:center;padding:var(--space-4) var(--space-5);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--elev-ring)}.auth-note p{margin:0;color:var(--muted);line-height:var(--leading-dense)}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-3);margin-bottom:var(--space-5)}.stat-card{min-height:112px;display:grid;align-content:end;padding:var(--space-5);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--elev-ring)}.stat-card span,.node-row span,.panel-list span{color:var(--meta);font:500 var(--text-sm)/1 var(--font-display);letter-spacing:var(--tracking-label)}.stat-card strong{display:block;margin-top:var(--space-2);color:var(--fg);font:500 var(--text-2xl)/var(--leading-tight) var(--font-display);font-variant-numeric:tabular-nums}.ops-shell{display:grid;grid-template-columns:minmax(0,.92fr) minmax(360px,1.08fr);gap:var(--space-5);align-items:start}.node-list{display:grid;gap:var(--space-3)}.node-row{display:grid;grid-template-columns:minmax(120px,.9fr) minmax(90px,.65fr) minmax(80px,.5fr) auto;gap:var(--space-3);align-items:center;padding:var(--space-4);border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--bg)}.node-row strong{display:block;margin-top:var(--space-2);color:var(--fg);font:500 var(--text-base)/var(--leading-tight) var(--font-display)}.ops-tabs{padding:var(--space-2);margin-bottom:var(--space-4);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--elev-ring);overflow-x:auto;flex-wrap:nowrap}.ops-tabs button{min-height:40px;padding:0 var(--space-4);border:1px solid transparent;border-radius:var(--radius-sm);background:transparent;color:var(--fg-2);font:500 var(--text-sm)/1 var(--font-display);letter-spacing:var(--tracking-label);white-space:nowrap}.ops-tabs button[aria-selected="true"]{border-color:var(--tag-bg-strong);background:var(--tag-bg-faint);color:var(--accent)}.ops-panel[hidden]{display:none}.ops-panel{display:grid;gap:var(--space-4)}.panel-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}.panel-card{padding:var(--space-5);border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--bg)}.panel-card h3{margin:var(--space-2) 0 0;color:var(--fg);font:500 var(--text-xl)/var(--leading-tight) var(--font-display)}.panel-card p{margin:var(--space-2) 0 0;color:var(--muted);line-height:var(--leading-dense)}.panel-list{display:grid;gap:var(--space-3);margin:0;padding:0;list-style:none}.panel-list li{display:grid;grid-template-columns:minmax(110px,.55fr) minmax(0,1fr) auto;gap:var(--space-3);align-items:center;padding:var(--space-3);border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--bg)}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}.detail-item{padding:var(--space-4);border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--bg)}.detail-item span{display:block;color:var(--meta);font:500 var(--text-sm)/1 var(--font-display);letter-spacing:var(--tracking-label)}.detail-item strong{display:block;margin-top:var(--space-2);color:var(--fg);font-weight:500}.online-panel{margin-top:var(--space-5);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-5);align-items:center}.online-panel p{margin:var(--space-2) 0 0;color:var(--muted)}@media(max-width:980px){.ops-title-row,.auth-note,.online-panel{display:grid;grid-template-columns:1fr}.ops-actions{justify-content:flex-start}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ops-shell,.panel-grid{grid-template-columns:1fr}.node-row{grid-template-columns:repeat(2,minmax(0,1fr))}.node-row .status-badge{justify-self:start}.panel-list li{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}}@media(max-width:720px){.ops-page .site-header .wrap{min-height:64px;padding:0;align-items:center;flex-direction:row}.ops-page .brand span{display:none}.ops-page .nav-links{width:auto;overflow:visible;padding-bottom:0;gap:var(--space-1)}.ops-page .nav-links a{padding:0 var(--space-2)}.ops-main{padding:var(--space-6) 0 var(--space-12)}.ops-title-row h1{font-size:34px}.tool-panel{padding:var(--space-5)}.stat-grid,.node-row{grid-template-columns:1fr}.ops-actions .btn,.online-panel .btn{width:100%}.ops-tabs{margin-left:calc(var(--space-2) * -1);margin-right:calc(var(--space-2) * -1)}}
+  </style>
+</head>
+<body class="ops-page">
+  <div class="site-shell">
+    <a class="skip-link" href="#main">跳到内容</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/"><strong>抽纸盒</strong><span>服务器监控</span></a>
+        <nav class="nav-links" aria-label="页面导航">
+          <a href="/tools/">工具箱</a>
+          <a href="/">首页</a>
+        </nav>
+      </div>
+    </header>
+    <main class="ops-main" id="main">
+      <section class="wide-wrap ops-hero" aria-labelledby="page-title">
+        <div class="ops-title-row">
+          <div>
+            <div class="ops-badges" aria-label="原型边界">
+              <span class="ops-badge is-primary">脱敏原型</span>
+              <span class="ops-badge">Basic Auth 保护</span>
+              <span class="ops-badge">只读监控</span>
+            </div>
+            <h1 id="page-title">服务器监控</h1>
+            <p>把节点健康、巡检、费用和事件摘要放进一个纸面网格后台。公开原型不展示真实 IP、token、订阅地址或完整日志。</p>
+          </div>
+          <div class="ops-actions">
+            <a class="btn primary" href="https://chenzhihong.online/monitor/">线上登录打开</a>
+            <a class="btn" href="/tools/">工具箱映射入口</a>
+          </div>
+        </div>
+        <aside class="auth-note" aria-label="登录保护说明">
+          <p><strong>认证边界：</strong>线上后台受 Basic Auth 保护。未登录时出现登录框或 401 属于正常保护，工具箱静态入口只是映射入口，不绕过登录。</p>
+          <span class="status-badge is-primary">登录后可见</span>
+        </aside>
+      </section>
+
+      <section class="wide-wrap" aria-label="服务器监控工作台">
+        <div class="stat-grid">
+          <div class="stat-card"><span>在线节点</span><strong>3 / 4</strong></div>
+          <div class="stat-card"><span>需关注</span><strong>1 项</strong></div>
+          <div class="stat-card"><span>费用状态</span><strong>待复核</strong></div>
+          <div class="stat-card"><span>最近巡检</span><strong>2 分钟前</strong></div>
+        </div>
+
+        <div class="ops-shell">
+          <article class="tool-panel" aria-label="节点列表">
+            <div class="tool-panel-header">
+              <div>
+                <span>NODE LIST</span>
+                <strong>节点列表</strong>
+              </div>
+              <span class="status-badge is-primary">摘要视图</span>
+            </div>
+            <div class="node-list">
+              <div class="node-row"><span>节点</span><strong>web-main</strong><span>角色</span><strong>主站</strong><span>心跳</span><strong>42 秒前</strong><span class="status-badge is-ok">正常</span></div>
+              <div class="node-row"><span>节点</span><strong>api-worker</strong><span>角色</span><strong>任务</strong><span>心跳</span><strong>1 分钟前</strong><span class="status-badge is-ok">正常</span></div>
+              <div class="node-row"><span>节点</span><strong>media-worker</strong><span>角色</span><strong>素材</strong><span>心跳</span><strong>3 分钟前</strong><span class="status-badge is-warn">关注</span></div>
+              <div class="node-row"><span>节点</span><strong>edge-node-a</strong><span>角色</span><strong>边缘</strong><span>心跳</span><strong>登录后可见</strong><span class="status-badge is-muted">受保护</span></div>
+            </div>
+          </article>
+
+          <article class="tool-panel" aria-label="监控详情">
+            <div class="ops-tabs" role="tablist" aria-label="监控分区">
+              <button type="button" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">总览</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-checks" id="tab-checks" data-tab="checks">巡检</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-costs" id="tab-costs" data-tab="costs">费用</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-events" id="tab-events" data-tab="events">事件</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-detail" id="tab-detail" data-tab="detail">详情</button>
+            </div>
+
+            <section class="ops-panel" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-panel="overview">
+              <div class="panel-grid">
+                <div class="panel-card"><span class="small-label">HEALTH</span><h3>服务健康</h3><p>主站和任务服务正常。素材节点延迟偏高，建议登录后查看短日志摘要。</p></div>
+                <div class="panel-card"><span class="small-label">RISK</span><h3>当前风险</h3><p>1 个节点需要关注。公开原型只展示摘要，不展示路径、密钥或完整日志。</p></div>
+              </div>
+              <ul class="panel-list">
+                <li><span>最近检查</span><strong>HTTP、证书、磁盘、备份队列均已返回摘要。</strong><span class="status-badge is-ok">正常</span></li>
+                <li><span>保护状态</span><strong>敏感字段统一显示为登录后可见。</strong><span class="status-badge is-primary">受保护</span></li>
+              </ul>
+            </section>
+
+            <section class="ops-panel" role="tabpanel" id="panel-checks" aria-labelledby="tab-checks" data-panel="checks" hidden>
+              <ul class="panel-list">
+                <li><span>HTTP</span><strong>主站入口返回正常摘要，详细响应头登录后可见。</strong><span class="status-badge is-ok">正常</span></li>
+                <li><span>证书</span><strong>证书检查通过，下一次自动巡检等待线上服务执行。</strong><span class="status-badge is-ok">正常</span></li>
+                <li><span>磁盘</span><strong>media-worker 可用空间下降，需要复核素材归档。</strong><span class="status-badge is-warn">关注</span></li>
+                <li><span>备份</span><strong>最近一次备份摘要可见，备份路径登录后可见。</strong><span class="status-badge is-primary">受保护</span></li>
+              </ul>
+            </section>
+
+            <section class="ops-panel" role="tabpanel" id="panel-costs" aria-labelledby="tab-costs" data-panel="costs" hidden>
+              <div class="panel-grid">
+                <div class="panel-card"><span class="small-label">BUDGET</span><h3>月度预算</h3><p>预算分组只显示状态，不显示账单号、付款方式或账户邮箱。</p></div>
+                <div class="panel-card"><span class="small-label">REVIEW</span><h3>待复核项</h3><p>存在 1 项待复核账单，账单号和供应商后台链接登录后可见。</p></div>
+              </div>
+            </section>
+
+            <section class="ops-panel" role="tabpanel" id="panel-events" aria-labelledby="tab-events" data-panel="events" hidden>
+              <ul class="panel-list">
+                <li><span>2 分钟前</span><strong>证书检查通过，下一次自动巡检等待线上服务执行。</strong><span class="status-badge is-ok">正常</span></li>
+                <li><span>9 分钟前</span><strong>edge-node-a 心跳延迟，建议登录后查看短日志摘要。</strong><span class="status-badge is-warn">关注</span></li>
+                <li><span>今天</span><strong>费用分组存在 1 项待复核账单，账单号登录后可见。</strong><span class="status-badge is-primary">受保护</span></li>
+              </ul>
+            </section>
+
+            <section class="ops-panel" role="tabpanel" id="panel-detail" aria-labelledby="tab-detail" data-panel="detail" hidden>
+              <div class="detail-grid">
+                <div class="detail-item"><span>选中节点</span><strong>media-worker</strong></div>
+                <div class="detail-item"><span>地区</span><strong>SG sample</strong></div>
+                <div class="detail-item"><span>SSH 用户</span><strong>登录后可见</strong></div>
+                <div class="detail-item"><span>完整日志</span><strong>登录后可见</strong></div>
+                <div class="detail-item"><span>告警渠道</span><strong>脱敏摘要</strong></div>
+                <div class="detail-item"><span>订阅地址</span><strong>不在公开原型展示</strong></div>
+              </div>
+            </section>
+          </article>
+        </div>
+
+        <article class="tool-panel online-panel" aria-label="线上入口">
+          <div>
+            <span class="small-label">ONLINE BACKEND</span>
+            <p>真实监控后台入口需要登录。工具箱映射入口用于说明导航关系，不展示或绕过后台认证。</p>
+          </div>
+          <a class="btn primary" href="https://chenzhihong.online/monitor/">线上登录打开</a>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-tab]'));
+      var panels = Array.prototype.slice.call(document.querySelectorAll('[data-panel]'));
+      function selectTab(id) {
+        tabs.forEach(function (tab) {
+          tab.setAttribute('aria-selected', String(tab.dataset.tab === id));
+        });
+        panels.forEach(function (panel) {
+          panel.hidden = panel.dataset.panel !== id;
+        });
+      }
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () { selectTab(tab.dataset.tab); });
+      });
+    })();
+  </script>
+</body>
+</html>

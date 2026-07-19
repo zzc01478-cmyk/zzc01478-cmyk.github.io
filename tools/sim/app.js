@@ -147,6 +147,12 @@ function countryCode(number) {
   return 'SIM';
 }
 
+function countryMark(code) {
+  if (code === 'SIM') return '<span class="country-mark">SIM</span>';
+  const names = { GB: '英国', DE: '德国', HK: '香港', PH: '菲律宾', US: '美国' };
+  return `<span class="country-mark"><img src="https://flagcdn.com/${code.toLowerCase()}.svg" alt="${names[code] || code}旗帜" referrerpolicy="no-referrer"></span>`;
+}
+
 function maskNumber(value) {
   const text = String(value || '未登记号码');
   const digits = text.replace(/\D/g, '');
@@ -209,12 +215,11 @@ function renderSims() {
 
   $('#simRows').innerHTML = visible.map(sim => `
     <article class="asset-row" data-id="${esc(sim.id)}">
-      <div class="sim-name"><span class="country-mark">${sim.code}</span><div><strong>${esc(sim.name)}</strong><span>${esc(maskNumber(sim.number))}</span><div class="platforms">${sim.platformsList.map(item => `<span class="tag">${esc(item)}</span>`).join('')}</div></div></div>
+      <div class="sim-name">${countryMark(sim.code)}<div><strong>${esc(sim.name)}</strong><span>${esc(maskNumber(sim.number))}</span><div class="platforms">${sim.platformsList.map(item => `<span class="tag">${esc(item)}</span>`).join('')}</div></div></div>
       <div class="cell" data-label="状态"><span class="status ${sim.status === 'attention' ? 'attention' : ''}">${sim.status === 'attention' ? '需关注' : '安全'}</span><span>${sim.days < 0 ? `已过期 ${Math.abs(sim.days)} 天` : `${sim.days} 天后到期`}</span></div>
       <div class="cell" data-label="到期日"><strong>${esc(sim.expireDate)}</strong><span>提前 ${sim.advance} 天提醒</span></div>
       <div class="cell" data-label="提醒规则"><strong>每 ${sim.interval} 天</strong><span>${sim.maxTimes ? `最多 ${sim.maxTimes} 次` : '次数不限'}${sim.remark ? ` · ${esc(sim.remark)}` : ''}</span></div>
       <div class="row-actions">
-        <button class="icon-btn" type="button" data-sim-action="renew" data-tooltip="一键续期" aria-label="为 ${esc(sim.name)} 一键续期"><i data-lucide="refresh-cw"></i></button>
         <button class="icon-btn" type="button" data-sim-action="edit" data-tooltip="编辑记录" aria-label="编辑 ${esc(sim.name)}"><i data-lucide="pencil"></i></button>
         <button class="icon-btn" type="button" data-sim-action="delete" data-tooltip="删除记录" aria-label="删除 ${esc(sim.name)}"><i data-lucide="trash-2"></i></button>
       </div>
@@ -265,22 +270,6 @@ async function saveSim(event) {
     $('#simDialog').close();
     await fetchSims();
     toast(id ? '号码记录已更新' : '号码已加入保号计划');
-  } catch (error) {
-    toast(error.message);
-  }
-}
-
-async function renewSim(sim) {
-  if (!sim.cycle) return toast('请先为这张卡设置保号周期');
-  if (!window.confirm(`确认已完成“${sim.name}”的保号操作？到期日将从今天起顺延 ${sim.cycle} 天。`)) return;
-  const next = new Date();
-  next.setDate(next.getDate() + Number(sim.cycle));
-  try {
-    await jsonRequest(ESIM_API, {
-      method: 'PUT', headers: authHeaders(), body: JSON.stringify({ id: sim.id, expireDate: next.toISOString().slice(0, 10) })
-    });
-    await fetchSims();
-    toast(`${sim.name} 已顺延续期`);
   } catch (error) {
     toast(error.message);
   }
@@ -506,7 +495,6 @@ $('#simRows').addEventListener('click', event => {
   const button = event.target.closest('[data-sim-action]');
   if (!button) return;
   const sim = sims.find(item => String(item.id) === button.closest('[data-id]').dataset.id);
-  if (button.dataset.simAction === 'renew') renewSim(sim);
   if (button.dataset.simAction === 'edit') openSimDialog(sim);
   if (button.dataset.simAction === 'delete') askDelete('sim', sim);
 });

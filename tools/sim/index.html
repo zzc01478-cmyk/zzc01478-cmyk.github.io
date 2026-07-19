@@ -193,6 +193,7 @@
     .asset-row:hover { background: color-mix(in srgb, var(--tag-bg-faint) 36%, var(--surface)); }
     .sim-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
     .country-mark { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--accent); font: 500 var(--text-xs)/1 var(--font-mono); }
+    .country-mark img { width: 24px; max-height: 18px; display: block; border-radius: 2px; }
     .sim-name strong, .cell strong { display: block; font-weight: 500; }
     .sim-name span, .cell span, .record-note { display: block; margin-top: 3px; color: var(--muted); font-size: var(--text-sm); }
     .platforms { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-2); }
@@ -437,6 +438,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="./app.js?v=20260719-kami" defer></script>
+  <script src="./app.js?v=20260719-kami-r2" defer></script>
 </body>
 </html>

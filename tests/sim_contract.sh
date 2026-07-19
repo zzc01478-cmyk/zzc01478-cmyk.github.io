@@ -14,6 +14,7 @@ grep -q 'https://flagcdn.com/' tools/sim/app.js
 grep -q '.country-mark {.*border: 0; background: transparent;' tools/sim/index.html
 grep -q '@keyframes row-in' tools/sim/index.html
 grep -q 'prefers-reduced-motion: no-preference' tools/sim/index.html
+grep -q '.topbar-inner, .login-sheet, .page-heading' tools/sim/index.html
 grep -q 'animation-duration: 1ms' tools/sim/index.html
 ! grep -q 'data-lucide="sim-card"' tools/sim/index.html
 ! grep -q '本地演示' tools/sim/index.html

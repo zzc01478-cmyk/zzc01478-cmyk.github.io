@@ -247,7 +247,8 @@
     @keyframes dialog-in { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
     @media (prefers-reduced-motion: no-preference) {
-      .page-heading, .tabs, .summary, .commandbar, .asset-table, .accounts-head, .locked-panel, .account-list { animation: rise-in 420ms var(--ease-standard) both; }
+      .topbar-inner, .login-sheet, .page-heading, .tabs, .summary, .commandbar, .asset-table, .accounts-head, .locked-panel, .account-list { animation: rise-in 420ms var(--ease-standard) both; }
+      .login-sheet { animation-delay: 60ms; }
       .tabs { animation-delay: 50ms; }
       .summary, .accounts-head { animation-delay: 100ms; }
       .commandbar, .locked-panel, .account-list { animation-delay: 150ms; }

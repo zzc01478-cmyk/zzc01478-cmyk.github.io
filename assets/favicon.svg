@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#1b365d"/>
+  <rect x="2.5" y="2.5" width="27" height="27" rx="5" fill="none" stroke="#f5f4ed" stroke-opacity="0.25" stroke-width="1"/>
+  <text x="16" y="22.5" font-family="'Songti SC', 'Source Han Serif SC', 'Noto Serif SC', serif" font-size="18" font-weight="600" fill="#f5f4ed" text-anchor="middle">盒</text>
+</svg>

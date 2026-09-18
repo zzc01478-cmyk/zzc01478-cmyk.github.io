@@ -1,0 +1,57 @@
+[Unit]
+Description=Private social video download gateway
+Wants=network-online.target
+After=network-online.target social-download-network.service
+Requires=social-download-network.service
+RequiresMountsFor=/var/lib/social-download
+
+[Service]
+Type=simple
+User=social-download
+Group=social-download
+WorkingDirectory=/opt/social-download/site
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=HOME=/var/lib/social-download/runtime
+Environment=TMPDIR=/var/lib/social-download/tmp
+Environment=PATH=/opt/social-download/metube/.venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=GIT_CONFIG_COUNT=2
+Environment=GIT_CONFIG_KEY_0=safe.directory
+Environment=GIT_CONFIG_VALUE_0=/opt/social-download/metube
+Environment=GIT_CONFIG_KEY_1=safe.directory
+Environment=GIT_CONFIG_VALUE_1=/opt/social-download/parser
+ExecStart=/opt/social-download/metube/.venv/bin/python -B /opt/social-download/site/services/social-download/server.py --metube-root /opt/social-download/metube --parser-root /opt/social-download/parser --runtime-root /var/lib/social-download/runtime --origin https://chenzhihong.online
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET
+ReadWritePaths=/var/lib/social-download
+InaccessiblePaths=/etc/nginx /etc/cli-proxy-api /var/www /run/dbus /run/docker.sock
+MemoryMax=1G
+MemorySwapMax=256M
+CPUQuota=150%
+TasksMax=64
+LimitNOFILE=1024
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

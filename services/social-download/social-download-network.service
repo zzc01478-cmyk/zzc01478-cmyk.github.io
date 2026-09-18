@@ -1,0 +1,12 @@
+[Unit]
+Description=Egress isolation for the social download service user
+Before=social-download.service
+After=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/nft -f /etc/social-download.nft
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

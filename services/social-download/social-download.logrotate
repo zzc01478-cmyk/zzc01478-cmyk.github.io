@@ -1,0 +1,10 @@
+/var/lib/social-download/runtime/engine.log {
+    daily
+    maxsize 10M
+    rotate 3
+    compress
+    missingok
+    notifempty
+    copytruncate
+    su social-download social-download
+}

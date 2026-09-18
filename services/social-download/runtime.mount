@@ -1,0 +1,12 @@
+[Unit]
+Description=Bounded private social download cache
+Before=social-download.service
+
+[Mount]
+What=/var/lib/social-download-storage/cache.ext4
+Where=/var/lib/social-download
+Type=ext4
+Options=loop,nosuid,nodev,noexec
+
+[Install]
+WantedBy=multi-user.target

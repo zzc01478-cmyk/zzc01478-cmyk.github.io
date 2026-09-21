@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /monitor/
+Disallow: /cpa/
+Disallow: /image-playground/
+Disallow: /proxy/
+Disallow: /s$
+Disallow: /s/
+Disallow: /thanks/
+
+Sitemap: https://chenzhihong.online/sitemap.xml

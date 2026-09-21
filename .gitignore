@@ -6,13 +6,10 @@
 node_modules/
 dist/
 build/
+
+# Historical local design drafts. Current canonical plans live under docs/superpowers/.
 个人网站重构结构化方案.md
 **/design/*.md
-assets/case-ai-workflow.jpg
-assets/case-content-commerce.jpg
-assets/case-private-tools-ops.jpg
-assets/materials/archive-desk-base.png
-assets/personal-system-map.png
 
 # Local-only mirrors of protected tool pages for localhost preview.
 /cpa/
@@ -20,7 +17,5 @@ assets/personal-system-map.png
 /monitor/
 /proxy/
 /tools/image/
-/tools/monitor/
 /tools/proxy/
 /tools/sim/
-/tools/ecommerce-video-breakdown/

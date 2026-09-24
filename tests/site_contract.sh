@@ -267,7 +267,7 @@ for image in assets/materials/proof-nv-dec-consume-public.png assets/materials/p
 done
 assert_contains index.html 'proof-nv-feb-consume-public\.png' 'home uses the sanitized February proof'
 assert_contains index.html 'proof-koc-timing-17s-public\.png' 'home uses the sanitized KOC proof'
-assert_contains index.html '2026 年 2 月 1–5 日，非整月对比' 'home distinguishes the five-day spend window from full months'
+assert_contains index.html '2026 年 2 月 1 日至 5 日，非整月对比' 'home distinguishes the five-day spend window from full months'
 assert_contains index.html '不代表销售额、ROI 或个人优化带来的收益' 'home separates spend from performance attribution'
 assert_contains works/index.html '消耗不等于销售额或 ROI' 'works distinguishes ad spend from business results'
 assert_contains works/index.html '不能据此推断留存或转化改善' 'interaction timing is not presented as retention or conversion uplift'
@@ -340,7 +340,15 @@ for removed in \
   assets/materials/resume-network-bg.png \
   assets/materials/script-paper.jpg \
   assets/materials/selected-work-shoe-lab.png \
-  assets/materials/works-archive-cabinet.png; do
+  assets/materials/works-archive-cabinet.png \
+  assets/materials/about-focus-lab.jpg \
+  assets/materials/index-01-hero-workbench.jpg \
+  assets/materials/index-03-process-board.jpg \
+  assets/materials/index-04-ip-entry-map.jpg \
+  assets/materials/index-05-final-cta-desk.jpg \
+  assets/materials/methods-framework-instrument.jpg \
+  assets/materials/resume-network-bg.jpg \
+  assets/materials/works-archive-cabinet.jpg; do
   if find . -path './.git' -prune -o -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec grep -lF "$removed" {} + | grep -q .; then
     fail "$removed is still referenced"
   else

@@ -34,10 +34,8 @@ check_asset() {
   fi
 }
 
-check_asset about/index.html about-focus-lab
-check_asset methods/index.html methods-framework-instrument
-check_asset works/index.html works-archive-cabinet
-check_asset resume/index.html resume-network-bg
+check_asset about/index.html profile-portrait
+check_asset resume/index.html profile-portrait
 
 public_pages=(
   index.html

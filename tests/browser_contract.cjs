@@ -46,7 +46,7 @@ async function run() {
     await page.goto(base + "/works/");
     assert.equal(await page.locator(".privacy-notice").count(), 0, "privacy dismissal persists across public pages");
 
-    const delayedImage = "**/about-focus-lab.jpg";
+    const delayedImage = "**/profile-portrait.jpg";
     const delayImage = async route => {
       await new Promise(resolve => setTimeout(resolve, 250));
       await route.continue();
@@ -60,7 +60,7 @@ async function run() {
     await page.unroute(delayedImage, delayImage);
     await page.locator(".image-panel img").evaluate(image => { image.src = "/missing-image-contract.jpg"; });
     await page.locator(".image-panel.has-image-error .image-error").waitFor();
-    assert((await page.locator(".image-error").textContent()).includes("影像工作台"));
+    assert((await page.locator(".image-error").textContent()).includes("陈志鸿"));
     assert.equal(await page.locator(".image-panel").getAttribute("aria-busy"), null);
 
     await page.setViewportSize({ width: 1440, height: 900 });

@@ -84,19 +84,24 @@ nav_labels() {
     paste -sd '|' -
 }
 
-expected_nav='首页|作品|方法|关于|简历|工具箱'
-for page in index.html works/index.html methods/index.html about/index.html resume/index.html tools/index.html; do
+expected_nav='首页|作品|关于'
+for page in index.html works/index.html works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html contact/index.html privacy/index.html terms/index.html thanks/index.html 404.html; do
   actual=$(nav_labels "$page")
   if [ "$actual" = "$expected_nav" ]; then pass "$page uses the shared public navigation"; else fail "$page navigation is $actual"; fi
   assert_contains "$page" '<main id="main" tabindex="-1">' "$page skip-link target is programmatically focusable"
+  assert_contains "$page" 'class="footer-links"[^>]*>.*href="https://chenzhihong\.online/tools/">工具箱</a>' "$page links the toolbox from the footer only"
+done
+for page in tools/index.html tools/social-download/index.html; do
+  actual=$(nav_labels "$page")
+  if [ "$actual" = '首页|作品|关于|工具箱' ]; then pass "$page uses the toolbox navigation"; else fail "$page navigation is $actual"; fi
 done
 
 public_pages=(
   index.html
   works/index.html
-  methods/index.html
+  works/nv-guse/index.html
+  works/sucai-fangfa/index.html
   about/index.html
-  resume/index.html
   contact/index.html
   privacy/index.html
   terms/index.html
@@ -107,9 +112,9 @@ canonical_for_page() {
   case "$1" in
     index.html) printf '%s' 'https://chenzhihong.online/' ;;
     works/index.html) printf '%s' 'https://chenzhihong.online/works/' ;;
-    methods/index.html) printf '%s' 'https://chenzhihong.online/methods/' ;;
+    works/nv-guse/index.html) printf '%s' 'https://chenzhihong.online/works/nv-guse/' ;;
+    works/sucai-fangfa/index.html) printf '%s' 'https://chenzhihong.online/works/sucai-fangfa/' ;;
     about/index.html) printf '%s' 'https://chenzhihong.online/about/' ;;
-    resume/index.html) printf '%s' 'https://chenzhihong.online/resume/' ;;
     contact/index.html) printf '%s' 'https://chenzhihong.online/contact/' ;;
     privacy/index.html) printf '%s' 'https://chenzhihong.online/privacy/' ;;
     terms/index.html) printf '%s' 'https://chenzhihong.online/terms/' ;;
@@ -155,14 +160,30 @@ description_count=$(printf '%s\n' "$descriptions" | wc -l | tr -d ' ')
 unique_description_count=$(printf '%s\n' "$descriptions" | sort -u | wc -l | tr -d ' ')
 if [ "$description_count" = "$unique_description_count" ]; then pass 'public pages use unique meta descriptions'; else fail 'public pages use unique meta descriptions'; fi
 
-for page in index.html works/index.html methods/index.html about/index.html resume/index.html contact/index.html; do
+for page in index.html works/index.html works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html contact/index.html; do
   hero=$(awk '/<section class="hero/{inside=1} inside{print} inside && /<\/section>/{exit}' "$page")
   assert_text_contains "$hero" 'class="actions"' "$page has an above-fold action group"
   assert_text_contains "$hero" 'class="btn primary"' "$page has an above-fold primary CTA"
 done
 
-for page in index.html works/index.html methods/index.html about/index.html resume/index.html; do
+for page in index.html works/index.html works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html; do
   assert_contains "$page" '<body[^>]*data-mobile-cta' "$page enables the sticky mobile CTA"
+done
+assert_contains assets/site-motion.js '关注抖音' 'mobile CTA leads with following on Douyin'
+for page in index.html works/index.html contact/index.html; do
+  assert_not_contains "$page" '岗位|求职|简历' "$page carries no job-seeking wording"
+done
+assert_contains index.html '<h1 class="display">抽纸盒</h1>' 'home leads with the IP name'
+assert_contains index.html 'douyin\.com/user/MS4wLjABAAAAgzfVM9AGNSNbj_sEUfEDqoAVv53iQ90McrxvDUUGi2w' 'home links the public Douyin profile, not /user/self'
+assert_not_contains index.html 'douyin\.com/user/self' 'home never links the owner-only Douyin URL'
+for block in featured latest; do
+  assert_count 1 "<!-- works:$block:start -->" index.html "home has one generated $block block"
+done
+assert_count 1 '<!-- works:wall:start -->' works/index.html 'works wall has one generated block'
+assert_count 1 '<!-- works:urls:start -->' sitemap.xml 'sitemap has one generated works block'
+if python3 scripts/build_works.py --check >/dev/null; then pass 'every work note passes validation'; else fail 'every work note passes validation'; fi
+for option in 商务合作 作品授权 交流; do
+  assert_contains contact/index.html "<option value=\"$option\">" "contact offers the $option topic"
 done
 
 assert_contains assets/site-motion.js 'className = "mobile-action-bar"' 'shared JavaScript creates the sticky mobile CTA'
@@ -186,7 +207,7 @@ assert_contains assets/site-motion.js '请填写至少 2 个字的称呼' 'conta
 assert_contains assets/site-motion.js '请填写可以回复的邮箱地址' 'contact form defines the email error state'
 assert_contains assets/site-motion.js '请用至少 10 个字说明' 'contact form defines the message error state'
 
-analytics_pages=(index.html works/index.html methods/index.html about/index.html resume/index.html contact/index.html privacy/index.html terms/index.html)
+analytics_pages=(index.html works/index.html works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html contact/index.html privacy/index.html terms/index.html)
 for page in "${analytics_pages[@]}"; do
   assert_count 1 'src="https://static\.cloudflareinsights\.com/beacon\.min\.js"' "$page" "$page loads the Cloudflare Web Analytics beacon once"
   assert_count 1 'data-cf-beacon=' "$page" "$page carries one Cloudflare Web Analytics site token"
@@ -207,10 +228,13 @@ assert_contains thanks/index.html '请确认邮件已经在邮箱应用中点击
 assert_contains robots.txt '^User-agent: \*$' 'robots file addresses all crawlers'
 assert_contains robots.txt '^Disallow: /thanks/$' 'robots file excludes the thank-you page'
 assert_contains robots.txt '^Sitemap: https://chenzhihong\.online/sitemap\.xml$' 'robots file links the sitemap'
-for route in '' works/ methods/ about/ resume/ contact/ privacy/ terms/; do
+for route in '' works/ works/nv-guse/ works/sucai-fangfa/ about/ contact/ privacy/ terms/; do
   assert_contains sitemap.xml "<loc>https://chenzhihong\.online/${route}</loc>" "sitemap includes /$route"
 done
-assert_not_contains sitemap.xml '/thanks/|/404\.html|/tools/' 'sitemap excludes noindex and protected pages'
+assert_not_contains sitemap.xml '/thanks/|/404\.html|/tools/|/methods/|/resume/' 'sitemap excludes noindex, protected and retired pages'
+for page in index.html works/index.html works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html contact/index.html privacy/index.html terms/index.html thanks/index.html 404.html; do
+  assert_not_contains "$page" 'href="/(methods|resume)/' "$page no longer links the retired methods or resume pages"
+done
 assert_contains docs/superpowers/specs/2026-09-13-production-optimization-guide.md 'try_files \$uri \$uri/ =404;' 'Nginx guide stops unknown public routes before the backend'
 assert_contains docs/superpowers/specs/2026-09-13-production-optimization-guide.md 'proxy_intercept_errors on;' 'Nginx guide documents proxied 404 interception'
 assert_contains docs/superpowers/specs/2026-09-13-production-optimization-guide.md '证书路径没有确认前，不要启用 `listen 443 ssl`' 'Nginx guide gates HTTPS on a verified certificate'
@@ -235,44 +259,49 @@ assert_contains assets/site-system.css '\.nav-links a[[:space:]]*\{' 'navigation
 assert_contains assets/site-system.css 'min-height:[[:space:]]*44px' 'navigation exposes a 44px touch target'
 assert_contains assets/site-system.css '^[[:space:]]{2}\.case-proof-grid[[:space:]]*\{' 'case proof grid has an explicit phone layout'
 
-assert_count 4 'role="tab"' methods/index.html 'methods exposes four tabs'
-assert_count 4 'id="method-tab-[^"]+"' methods/index.html 'each method tab has an id'
-assert_count 4 'aria-controls="method-panel-[^"]+"' methods/index.html 'each method tab controls a panel'
-assert_count 1 'role="tab"[^>]*tabindex="0"' methods/index.html 'one method tab is in the tab order'
-assert_count 3 'role="tab"[^>]*tabindex="-1"' methods/index.html 'inactive method tabs use roving tabindex'
-assert_count 4 'role="tabpanel"' methods/index.html 'methods exposes four tab panels'
-assert_count 4 'id="method-panel-[^"]+"' methods/index.html 'each method panel has an id'
-assert_count 4 'aria-labelledby="method-tab-[^"]+"' methods/index.html 'each method panel names its tab'
-assert_tab_links methods/index.html 'methods'
+assert_count 4 'role="tab"' works/sucai-fangfa/index.html 'method page exposes four tabs'
+assert_count 4 'id="method-tab-[^"]+"' works/sucai-fangfa/index.html 'each method tab has an id'
+assert_count 4 'aria-controls="method-panel-[^"]+"' works/sucai-fangfa/index.html 'each method tab controls a panel'
+assert_count 1 'role="tab"[^>]*tabindex="0"' works/sucai-fangfa/index.html 'one method tab is in the tab order'
+assert_count 3 'role="tab"[^>]*tabindex="-1"' works/sucai-fangfa/index.html 'inactive method tabs use roving tabindex'
+assert_count 4 'role="tabpanel"' works/sucai-fangfa/index.html 'method page exposes four tab panels'
+assert_count 4 'id="method-panel-[^"]+"' works/sucai-fangfa/index.html 'each method panel has an id'
+assert_count 4 'aria-labelledby="method-tab-[^"]+"' works/sucai-fangfa/index.html 'each method panel names its tab'
+assert_tab_links works/sucai-fangfa/index.html 'method page'
 for key in ArrowLeft ArrowRight ArrowUp ArrowDown Home End; do
   assert_contains assets/site-motion.js "$key" "methods keyboard handling includes $key"
 done
 assert_contains assets/site-motion.js '\.focus\(' 'interactive navigation moves keyboard focus'
 
-for target in selected-works contact; do
-  assert_contains index.html "id=\"$target\"[^>]*tabindex=\"-1\"" "home hash target $target is programmatically focusable"
+assert_contains index.html 'id="contact"[^>]*tabindex="-1"' 'home hash target contact is programmatically focusable'
+assert_contains about/index.html 'id="experience"[^>]*tabindex="-1"' 'about hash target experience is programmatically focusable'
+for target in nv iteration koc; do
+  assert_contains works/nv-guse/index.html "id=\"$target\"[^>]*tabindex=\"-1\"" "NV case hash target $target is programmatically focusable"
 done
-for target in nv iteration shoe koc matrix; do
-  assert_contains works/index.html "id=\"$target\"[^>]*tabindex=\"-1\"" "works hash target $target is programmatically focusable"
+for target in shoe matrix process; do
+  assert_contains works/sucai-fangfa/index.html "id=\"$target\"" "method page keeps the $target anchor"
+done
+for anchor in nv iteration koc shoe matrix; do
+  assert_contains assets/site-motion.js "$anchor: \"/works/" "old /works/#$anchor links are redirected"
 done
 assert_contains assets/site-motion.js "a\\[href\\^=['\"]#['\"]\\]" 'same-page hash links receive focus handling'
 
-nv_case=$(awk '/id="nv"/,/id="iteration"/' works/index.html)
-iteration_case=$(awk '/id="iteration"/,/id="shoe"/' works/index.html)
+nv_case=$(awk '/id="nv"/,/id="iteration"/' works/nv-guse/index.html)
+iteration_case=$(awk '/id="iteration"/,/id="koc"/' works/nv-guse/index.html)
 assert_text_contains "$nv_case" 'proof-nv-dec-consume-public\.png' 'NV case shows sanitized December proof'
 assert_text_contains "$nv_case" 'proof-nv-jan-consume-public\.png' 'NV case shows sanitized January proof'
 assert_text_contains "$iteration_case" 'proof-video-timing-13s\.png' 'iteration case shows timing proof'
 for image in assets/materials/proof-nv-dec-consume-public.png assets/materials/proof-nv-jan-consume-public.png assets/materials/proof-video-timing-13s.png; do
   if [ -f "$image" ]; then pass "$image exists"; else fail "$image exists"; fi
 done
-assert_contains index.html 'proof-nv-feb-consume-public\.png' 'home uses the sanitized February proof'
-assert_contains index.html 'proof-koc-timing-17s-public\.png' 'home uses the sanitized KOC proof'
-assert_contains index.html '2026 年 2 月 1 日至 5 日，非整月对比' 'home distinguishes the five-day spend window from full months'
-assert_contains index.html '不代表销售额、ROI 或个人优化带来的收益' 'home separates spend from performance attribution'
-assert_contains works/index.html '消耗不等于销售额或 ROI' 'works distinguishes ad spend from business results'
-assert_contains works/index.html '不能据此推断留存或转化改善' 'interaction timing is not presented as retention or conversion uplift'
-assert_contains resume/index.html '具体材料按授权范围提供' 'resume keeps shared materials within authorization'
-for page in index.html works/index.html resume/index.html; do
+assert_text_contains "$nv_case" 'proof-nv-feb-consume-public\.png' 'NV case shows sanitized February proof'
+assert_contains works/nv-guse/index.html 'proof-koc-timing-17s-public\.png' 'NV case shows the sanitized KOC proof'
+assert_contains works/nv-guse/index.html '2 月只统计前 5 天，不与整月直接比较' 'NV case distinguishes the five-day spend window from full months'
+assert_contains works/nv-guse/index.html '消耗不等于销售额或 ROI' 'NV case distinguishes ad spend from business results'
+assert_contains works/nv-guse/index.html '不能据此推断留存或转化改善' 'interaction timing is not presented as retention or conversion uplift'
+assert_contains about/index.html '具体材料按授权范围提供' 'about keeps shared materials within authorization'
+assert_count 6 'class="timeline-item"' about/index.html 'about carries the full experience timeline from the resume'
+for page in index.html works/index.html works/nv-guse/index.html about/index.html; do
   assert_not_contains "$page" '保留 80%|显著改善了前段留存|助力项目实现消耗稳步爬升|主导账号精剪' "$page avoids unverified metrics and expanded ownership"
 done
 for raw_proof in \
@@ -281,20 +310,20 @@ for raw_proof in \
   assets/materials/proof-nv-feb-consume.png \
   assets/materials/proof-koc-timing-17s.png; do
   if [ -e "$raw_proof" ]; then fail "$raw_proof is not retained in the public source"; else pass "$raw_proof is absent from the public source"; fi
-  if find . -path './.git' -prune -o -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec grep -lF "$raw_proof" {} + | grep -q .; then
+  if find . \( -path './.git' -o -path './site/node_modules' -o -path './site/.next' -o -path './site/out' \) -prune -o -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.tsx' -o -name '*.ts' -o -name '*.json' \) -exec grep -lF "$raw_proof" {} + | grep -q .; then
     fail "$raw_proof is still referenced"
   else
     pass "$raw_proof has zero HTML/CSS/JS references"
   fi
 done
 
-for page in works/index.html about/index.html methods/index.html; do
+for page in works/nv-guse/index.html works/sucai-fangfa/index.html about/index.html; do
   assert_contains "$page" 'class="[^"]*page-next-step' "$page has an explicit next-step CTA"
   next_line=$(grep -n 'class="[^"]*page-next-step' "$page" | tail -1 | cut -d: -f1)
   last_section=$(grep -n '<section class="section"' "$page" | tail -1 | cut -d: -f1)
   if [ "$next_line" -gt "$last_section" ]; then pass "$page keeps its next step in the final section"; else fail "$page keeps its next step in the final section"; fi
 done
-assert_contains about/index.html '<h2>下一步，邮件沟通具体材料。</h2>' 'about next-step heading matches its email action'
+assert_contains about/index.html '<h2>合作、授权或交流，发邮件最快。</h2>' 'about next-step heading matches its email action'
 
 assert_contains tools/index.html '<main[^>]*id="main"[^>]*tabindex="-1"|<main[^>]*tabindex="-1"[^>]*id="main"' 'toolbox skip-link target is focusable'
 assert_contains tools/index.html 'id="tool-cards"[^>]*tabindex="-1"' 'toolbox action target is focusable'
@@ -328,7 +357,7 @@ for page in tools/proxy/index.html proxy/2vbCz7mecyxuFkhtAZWJ2CWE9cDH/index.html
   fi
 done
 
-backups=$(find . -path './.git' -prune -o -type f -name '*.bak*' -print)
+backups=$(find . \( -path './.git' -o -path './site/node_modules' \) -prune -o -type f -name '*.bak*' -print)
 if [ -n "$backups" ]; then fail "repository contains backup files: $(printf '%s\n' "$backups" | paste -sd, -)"; else pass 'repository contains no backup files'; fi
 
 for removed in \
@@ -349,7 +378,7 @@ for removed in \
   assets/materials/methods-framework-instrument.jpg \
   assets/materials/resume-network-bg.jpg \
   assets/materials/works-archive-cabinet.jpg; do
-  if find . -path './.git' -prune -o -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec grep -lF "$removed" {} + | grep -q .; then
+  if find . \( -path './.git' -o -path './site/node_modules' -o -path './site/.next' -o -path './site/out' \) -prune -o -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.tsx' -o -name '*.ts' -o -name '*.json' \) -exec grep -lF "$removed" {} + | grep -q .; then
     fail "$removed is still referenced"
   else
     pass "$removed has zero HTML/CSS/JS references"
@@ -359,7 +388,7 @@ done
 while IFS= read -r page; do
   duplicate_ids=$(grep -Eo 'id="[^"]+"' "$page" | sed -E 's/^id="//; s/"$//' | sort | uniq -d)
   if [ -n "$duplicate_ids" ]; then fail "$page has duplicate ids: $(printf '%s' "$duplicate_ids" | paste -sd, -)"; else pass "$page has unique ids"; fi
-done < <(find . -type f -name '*.html' ! -path './.git/*' ! -path './docs/*' | LC_ALL=C sort)
+done < <(find . -type f -name '*.html' ! -path './.git/*' ! -path './docs/*' ! -path './site/*' | LC_ALL=C sort)
 
 while IFS= read -r page; do
   base=$(dirname "$page")
@@ -370,11 +399,12 @@ while IFS= read -r page; do
       ''|'/'|'#'*|http://*|https://*|mailto:*|data:*|javascript:*) continue ;;
       *'${'*|*'`'*|*' + '*) continue ;;
     esac
+    if [[ "$clean" = /media/works/* ]] && [ ! -d media/works ]; then skip "$page reference $clean (generated media not built here)"; continue; fi
     if [[ "$clean" = /* ]]; then path=".${clean}"; else path="$base/$clean"; fi
     if [ -d "$path" ]; then path="$path/index.html"; fi
     if [ -e "$path" ]; then pass "$page reference $clean exists"; else fail "$page reference $clean exists"; fi
   done < <(grep -Eho '(href|src)="[^"]+"' "$page" | sed -E 's/^[^=]+="//; s/"$//' | LC_ALL=C sort -u)
-done < <(find . -type f -name '*.html' ! -path './.git/*' ! -path './docs/*' | LC_ALL=C sort)
+done < <(find . -type f -name '*.html' ! -path './.git/*' ! -path './docs/*' ! -path './site/*' | LC_ALL=C sort)
 
 if [ "$failures" -gt 0 ]; then
   printf '\n%d contract failure(s)\n' "$failures"

@@ -4,8 +4,9 @@
 
 ## 1. 项目目标
 
-- 这是陈志鸿的个人作品集与工具入口，核心用途是向招聘方和合作方展示真实、可核验的职业经历、作品、方法与能力。
-- 在不改变既有品牌定位和公开 URL 的前提下，提高内容可信度、可访问性、响应式体验、性能与运维安全。
+- 这是「抽纸盒」（陈志鸿）的个人 IP 内容档案。2026-09-25 所有者把方向从求职改为个人 IP：面向用 AI 做内容的人，沉淀 AI 视频作品、制作笔记与电商素材案例；抖音、X、小红书负责分发，网站负责沉淀。设计约束见 `docs/superpowers/specs/2026-09-25-ip-archive-design.md`。
+- 不要把网站改回求职站，也不要在未经所有者同意时再改变这个定位。
+- 调整公开 URL 时，旧地址必须用 nginx 301 跳到新位置，不能让已分享出去的链接失效。
 - 公开站点与受保护工具是两套边界。不能为了本地预览方便而削弱线上认证、暴露内部数据或把运行时文件纳入公开站点。
 
 ## 2. 开始工作前
@@ -18,8 +19,11 @@
 
 ## 3. 仓库结构与真源
 
-- 公开页面：`index.html`、`works/index.html`、`methods/index.html`、`about/index.html`、`resume/index.html`。
+- 公开页面：`index.html`、`works/index.html`（作品墙）、`works/<slug>/index.html`（作品详情）、`about/index.html`（含经历，原简历并入）、`contact/index.html`，以及隐私、条款等辅助页。
+- 作品真源：`content/works/<slug>/note.md` 是每件作品的元数据与制作笔记；`scripts/build_works.py`（只用 Python 标准库，外加本机 ffmpeg）据此生成详情页、作品墙、首页作品区和 sitemap 条目。生成出来的 HTML 要提交；不要手改生成区块，改 `note.md` 后重新运行脚本。
+- 视频与封面：源视频放在 `content/works/<slug>/`，生成的网页用媒体放在 `media/works/<slug>/`，两者都在 `.gitignore` 里，不进 Git（仓库是公开的 GitHub Pages 仓库，也不适合放大文件）。上线时按白名单单独复制到服务器。
 - 公共前端资源：`assets/site-system.css`、`assets/site-motion.js` 与 `assets/materials/`。
+- 新版公开站（Next.js，尚未上线）：`site/` 是所有者 2026-09-25 选定的 React 重写，静态导出到 `site/out/`（`cd site && npm run build`），交互参考 Skiper UI 免费组件并在页脚署名。它直接引用 `assets/site-system.css`，作品数据读 `build_works.py` 写出的 `site/src/data/works.json`。切换上线前，根目录页面仍是线上真源，两边都要保持一致；`site/node_modules`、`site/.next`、`site/out` 不进 Git。新站的浏览器验收：在 `site/out` 起本地服务后用 `SITE_URL` 指向它运行 `tests/browser_contract.cjs`。
 - 工具入口：`tools/index.html`。工具页可能是受保护服务入口、跳转页或本地原型，不能一概当作公开静态页面。
 - 受保护镜像：`cpa/`、`image-playground/`、`monitor/`、`proxy/`、`tools/image/`、`tools/proxy/`、`tools/sim/` 等目录可能包含本地镜像或运行时资产；先检查 `.gitignore`、现有跟踪状态和对应测试。
 - 设计与运维约束：`docs/superpowers/specs/` 是设计约束，`docs/superpowers/plans/` 是执行记录。历史计划不能替代当前运行时核验。
@@ -39,7 +43,9 @@
 ## 5. 内容与隐私边界
 
 - 所有个人经历、职责、业绩、时间、公司、工具能力和项目成果必须有仓库内容或用户提供的证据支持。
-- 可以使用的职业定位包括：`信息流素材编导`、`广告素材策划`、`千川素材编导`。不得擅自扩写为女鞋运营、全链路负责人或其他未经证实的身份。
+- 对外主定位是「抽纸盒 · 用 AI 做视频的编导」。经历描述仍可使用 `信息流素材编导`、`广告素材策划`、`千川素材编导`。不得擅自扩写为女鞋运营、全链路负责人或其他未经证实的身份。
+- 作品归属：个人作品可以直接公开；给公司或客户做的作品，只有在已公开发布或对方同意时才能放，并且不放后台数据。`note.md` 必须写明归属，拿不准的不放。
+- 制作笔记只写所有者提供的工具、提示词、步骤和踩坑，不补写未提供的参数、效果或数据。
 - 不捏造 GMV、ROI、转化率、客户、奖项、管理规模、从业年限或归因关系。
 - 不把私人手机号、详细住址、证件、账号、密钥、令牌、内部 IP、服务凭据或未公开业务数据写入 HTML、JavaScript、日志、测试夹具或提交历史。
 - `.env`、密钥、认证文件和服务器状态文件必须保持本地，不得强制加入 Git。
@@ -47,7 +53,8 @@
 
 ## 6. 前端约束
 
-- 默认保留当前浅色纸张质感、信息层级、中文语气和导航结构；除非用户明确要求，不做整体品牌重设计。
+- 保留 Kami 浅色纸张质感与中文语气。视频、封面和作品墙直接放在纸面上，不加深色「放映框」边框（所有者 2026-09-25 决定，新站 `site/` 已执行；旧的根目录页面在切换前仍保留旧样式）。主导航固定为「首页 / 作品 / 关于」，工具箱入口只在页脚。除非用户明确要求，不做整体品牌重设计。
+- 站内视频为 1080p H.264，必须 faststart、`preload="none"` 并带封面；首页不自动加载视频。服务器在新加坡且没有 CDN，国内加载慢，新增媒体时注意文件大小。
 - 页面必须在 320、390、768 和 1440 像素宽度下无横向溢出、无文字或控件重叠、无破图。
 - 使用语义化 HTML，维持合理标题层级、键盘操作、焦点状态、跳转锚点、替代文本和足够的触控尺寸。
 - 动效必须尊重 `prefers-reduced-motion`；打印页面不能隐藏尚未触发动画的正文。
@@ -57,8 +64,10 @@
 
 ## 7. 公开与受保护路由
 
-- 预期公开：`/`、`/works/`、`/methods/`、`/about/`、`/resume/` 和对应公共静态资源。
+- 预期公开：`/`、`/works/`、`/works/<slug>/`、`/about/`、`/contact/`、`/privacy/`、`/terms/`、`/media/works/*` 和对应公共静态资源。
+- 旧地址跳转（nginx 301）：`/resume/` → `/about/#experience`，`/methods/` → 素材编导方法页。`/works/#nv` 这类旧锚点由作品墙页面脚本跳到对应新页。
 - 预期受保护：`/tools/`、`/tools/*`、`/monitor/`、`/image-playground/`、`/cpa/`、`/s` 等内部工具入口。匿名访问返回 `401` 通常是正确边界，不得误判为站点故障。
+- 例外：按所有者 2026-09-24 的决定，`/tools/sim/` 页面不加 Nginx Basic Auth，匿名访问返回 `200`，只靠 SIM 自己的 Telegram 登录；不要把它当成漏洞去补。`/tools/sim/api/` 由应用令牌鉴权，也不能叠加 Basic Auth，否则会和应用自己的 `Authorization` 请求头冲突。
 - `tools/ecommerce-video-breakdown/index.html` 是本地预览与说明页面；线上同路径由后端服务拥有，不能用静态原型覆盖线上后端模板。
 - 浏览器端不得包含服务器内部令牌。Nginx Basic Auth、应用凭据和 API Key 是彼此独立的认证层，不能互相替代。
 

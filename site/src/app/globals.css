@@ -1,0 +1,3 @@
+/* Kami paper system: the same stylesheet the toolbox pages use, bundled from the repo root. */
+@import "../../../assets/site-system.css";
+@import "./components.css";

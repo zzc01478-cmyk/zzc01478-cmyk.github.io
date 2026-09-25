@@ -349,7 +349,7 @@
           firstInvalid = firstInvalid || topic;
         }
         if (message.value.trim().length < 10) {
-          setFieldError(message, "请用至少 10 个字说明岗位、产品或当前问题。");
+          setFieldError(message, "请用至少 10 个字说明想合作的内容或想聊的问题。");
           firstInvalid = firstInvalid || message;
         }
 
@@ -375,11 +375,49 @@
       });
     });
 
+    // Home reel: the poster button swaps in the real video only when clicked.
+    document.querySelectorAll("[data-play]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var video = button.parentElement.querySelector("video");
+        if (!video) return;
+        video.hidden = false;
+        button.hidden = true;
+        video.focus();
+        var playing = video.play();
+        if (playing && playing.catch) playing.catch(function () {});
+      });
+    });
+
+    // Prompt blocks on work pages: copy the prompt text.
+    document.querySelectorAll("[data-copy]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var code = button.parentElement.querySelector("code");
+        if (!code || !navigator.clipboard) return;
+        navigator.clipboard.writeText(code.textContent).then(function () {
+          button.textContent = "已复制";
+          window.setTimeout(function () { button.textContent = "复制"; }, 1600);
+        });
+      });
+    });
+
+    // Old /works/#case anchors from the job-seeking site now live on the two case pages.
+    if (window.location.pathname === "/works/") {
+      var movedCases = {
+        nv: "/works/nv-guse/",
+        iteration: "/works/nv-guse/#iteration",
+        koc: "/works/nv-guse/#koc",
+        shoe: "/works/sucai-fangfa/#shoe",
+        matrix: "/works/sucai-fangfa/#matrix"
+      };
+      var movedTo = movedCases[window.location.hash.slice(1)];
+      if (movedTo) window.location.replace(movedTo);
+    }
+
     if (document.body.hasAttribute("data-mobile-cta")) {
       var mobileActions = document.createElement("nav");
       mobileActions.className = "mobile-action-bar";
       mobileActions.setAttribute("aria-label", "移动端快捷行动");
-      mobileActions.innerHTML = '<a href="/works/">看作品</a><a class="primary" href="/contact/">联系我</a>';
+      mobileActions.innerHTML = '<a href="/works/">看作品</a><a class="primary" href="https://www.douyin.com/user/MS4wLjABAAAAgzfVM9AGNSNbj_sEUfEDqoAVv53iQ90McrxvDUUGi2w" rel="noopener">关注抖音</a>';
       document.body.appendChild(mobileActions);
       document.body.classList.add("has-mobile-action-bar");
     }

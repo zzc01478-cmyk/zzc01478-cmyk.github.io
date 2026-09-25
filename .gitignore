@@ -19,3 +19,11 @@ build/
 /tools/image/
 /tools/proxy/
 /tools/sim/
+
+# Work videos and generated web media stay out of Git (public repo, large files).
+# Deploy them to the server by whitelist; see AGENTS.md and the IP archive spec.
+/media/
+/content/works/**/*.mp4
+/content/works/**/*.mov
+/content/works/**/*.m4v
+/content/works/**/*.webm

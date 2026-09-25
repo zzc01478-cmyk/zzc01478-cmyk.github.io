@@ -4,10 +4,10 @@ const { chromium } = require("playwright");
 
 const base = process.env.SITE_URL || "http://127.0.0.1:8765";
 const pages = [
-  "/", "/works/", "/methods/", "/about/", "/resume/",
+  "/", "/works/", "/works/nv-guse/", "/works/sucai-fangfa/", "/about/",
   "/contact/", "/privacy/", "/terms/", "/thanks/", "/404.html",
 ];
-const mobileCtaPages = new Set(["/", "/works/", "/methods/", "/about/", "/resume/"]);
+const mobileCtaPages = new Set(["/", "/works/", "/works/nv-guse/", "/works/sucai-fangfa/", "/about/"]);
 
 async function run() {
   const browser = await chromium.launch({
@@ -66,8 +66,12 @@ async function run() {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(base);
     assert.equal(await page.locator("main a[href='https://chenzhihong.online/tools/']").count(), 0);
-    assert.equal(await page.locator(".nav-links a[href='https://chenzhihong.online/tools/']").count(), 1);
-    await page.getByRole("link", { name: "看职业经历", exact: true }).click();
+    assert.equal(await page.locator(".nav-links a[href='https://chenzhihong.online/tools/']").count(), 0);
+    assert.equal(await page.locator(".footer-links a[href='https://chenzhihong.online/tools/']").count(), 1);
+    assert.equal(await page.locator("h1").textContent(), "抽纸盒");
+    assert.equal(await page.locator("video[preload]:not([preload='none'])").count(), 0, "videos never preload");
+    await page.goto(base + "/about/");
+    await page.getByRole("link", { name: "看完整经历", exact: true }).click();
     await page.waitForFunction(() => document.activeElement.id === "experience");
     const recentJob = page.locator("#experience .timeline-item").first();
     assert.equal(await recentJob.locator("time").textContent(), "2026.03-2026.06");
@@ -84,10 +88,20 @@ async function run() {
             image.loading = "eager";
             await image.decode().catch(() => {});
           }
+          // Content clipped by an on-screen overflow:hidden/clip ancestor (a carousel track) cannot
+          // push past the viewport, so only unclipped elements count as overflow.
+          const clippedOnScreen = el => {
+            for (let box = el.parentElement; box && box !== document.body; box = box.parentElement) {
+              if (!/hidden|clip/.test(getComputedStyle(box).overflowX)) continue;
+              const b = box.getBoundingClientRect();
+              if (b.left >= -1 && b.right <= innerWidth + 1) return true;
+            }
+            return false;
+          };
           const outside = [...document.querySelectorAll("header *, main *")]
             .filter(el => {
               const r = el.getBoundingClientRect();
-              return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1);
+              return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1) && !clippedOnScreen(el);
             }).map(el => el.className || el.tagName);
           return {
             outside,
@@ -100,7 +114,7 @@ async function run() {
         });
         assert.deepEqual(layout.outside, [], `${width} ${route} overflow`);
         assert.deepEqual(layout.broken, [], `${width} ${route} images`);
-        assert.equal(layout.nav.length, 6);
+        assert.equal(layout.nav.length, 3);
         assert(layout.nav.every(r => r.height >= 44 && r.width >= 44));
         if (mobileCtaPages.has(route) && width <= 720) {
           const mobileAction = await page.locator(".mobile-action-bar").evaluate(el => ({
@@ -112,12 +126,7 @@ async function run() {
           assert.equal(mobileAction.position, "fixed", `${width} ${route} mobile CTA fixed`);
           assert(mobileAction.height >= 48, `${width} ${route} mobile CTA touch height`);
         }
-        if (route === "/") {
-          assert(await page.evaluate(() => {
-            const proof = document.querySelector(".proof-hero-sheet").getBoundingClientRect();
-            const note = document.querySelector(".note-sheet").getBoundingClientRect();
-            return proof.bottom <= note.top;
-          }), `${width} hero overlap`);
+        if (route === "/works/sucai-fangfa/") {
           await page.locator("[data-process-step]").last().click();
           await page.locator("[data-process-note] strong").waitFor();
           assert.equal(await page.locator("[data-process-note] strong").textContent(), "复盘");
@@ -125,7 +134,7 @@ async function run() {
         console.log(`PASS ${width} ${route}`);
       }
     }
-    await page.goto(base + "/methods/");
+    await page.goto(base + "/works/sucai-fangfa/");
     assert.equal(await page.locator('[role="tablist"]').getAttribute("aria-orientation"), "vertical");
     await page.locator("#method-tab-deconstruct").focus();
     for (const [key, id] of [
@@ -138,7 +147,7 @@ async function run() {
       assert.equal(await page.locator('[role="tab"][aria-selected="true"]').count(), 1);
     }
 
-    await page.goto(base + "/works/");
+    await page.goto(base + "/works/nv-guse/");
     const lightboxTrigger = page.locator(".proof-frame img").first();
     await lightboxTrigger.focus();
     await page.keyboard.press("Enter");
@@ -178,13 +187,14 @@ async function run() {
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(base + "/works/#koc");
+    await page.waitForURL(url => url.pathname === "/works/nv-guse/" && url.hash === "#koc");
     await page.waitForFunction(() => document.activeElement.id === "koc");
     assert(await page.evaluate(() =>
       document.querySelector("#koc").getBoundingClientRect().top >=
       document.querySelector(".site-header").getBoundingClientRect().bottom
     ), "hash target must clear the sticky header");
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await page.goto(base + "/resume/");
+    await page.goto(base + "/about/");
     await page.emulateMedia({ media: "print" });
     assert.equal(await page.locator("[data-reveal]").evaluateAll(nodes =>
       nodes.filter(el => getComputedStyle(el).opacity !== "1").length), 0,

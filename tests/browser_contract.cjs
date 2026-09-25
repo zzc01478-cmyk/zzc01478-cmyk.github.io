@@ -16,6 +16,8 @@ async function run() {
   });
   try {
     const page = await browser.newPage({ reducedMotion: "reduce" });
+    // Checking the live site from a slow link can need longer than Playwright's 30 s default.
+    if (process.env.TIMEOUT_MS) page.setDefaultTimeout(Number(process.env.TIMEOUT_MS));
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.route("https://static.cloudflareinsights.com/**", route => route.abort());
@@ -47,10 +49,17 @@ async function run() {
     assert.equal(await page.locator(".privacy-notice").count(), 0, "privacy dismissal persists across public pages");
 
     const delayedImage = "**/profile-portrait.jpg";
+    // Hold the image until the page script has started (body.is-loaded): on a slow link the
+    // script can arrive after a short fixed delay, and then there is no loading state to see.
     const delayImage = async route => {
+      await page.waitForFunction(() => document.body.classList.contains("is-loaded"), undefined, { timeout: 60_000 }).catch(() => {});
       await new Promise(resolve => setTimeout(resolve, 250));
       await route.continue();
     };
+    // The home page shows the same portrait, and the live server caches /assets/ for 7 days, so
+    // bypass the cache here or the image is already complete and the loading state never shows.
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
     await page.route(delayedImage, delayImage);
     await page.goto(base + "/about/", { waitUntil: "domcontentloaded" });
     await page.locator(".image-panel.is-image-loading").waitFor();
@@ -58,6 +67,7 @@ async function run() {
     await page.waitForLoadState("load");
     await page.waitForFunction(() => !document.querySelector(".image-panel").classList.contains("is-image-loading"));
     await page.unroute(delayedImage, delayImage);
+    await cdp.send("Network.setCacheDisabled", { cacheDisabled: false });
     await page.locator(".image-panel img").evaluate(image => { image.src = "/missing-image-contract.jpg"; });
     await page.locator(".image-panel.has-image-error .image-error").waitFor();
     assert((await page.locator(".image-error").textContent()).includes("陈志鸿"));
